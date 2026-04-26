@@ -1,0 +1,85 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build ${{ matrix.rid }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+            artifact: nexus
+          - os: windows-latest
+            rid: win-x64
+            artifact: nexus.exe
+          - os: macos-latest
+            rid: osx-x64
+            artifact: nexus
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Publish single-file binary
+        run: >
+          dotnet publish src/Nexus.Cli/Nexus.Cli.csproj
+          -c Release
+          -r ${{ matrix.rid }}
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:PublishTrimmed=true
+          -o ./dist/${{ matrix.rid }}
+
+      - name: Rename artifact
+        shell: bash
+        run: |
+          mv ./dist/${{ matrix.rid }}/${{ matrix.artifact }} \
+             ./dist/nexus-${{ matrix.rid }}${{ matrix.rid == 'win-x64' && '.exe' || '' }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-${{ matrix.rid }}
+          path: ./dist/nexus-${{ matrix.rid }}*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./artifacts/*
+          body: |
+            ## Installation
+
+            ### Linux / macOS
+            ```bash
+            curl -L https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/nexus-linux-x64 -o nexus
+            chmod +x nexus
+            sudo mv nexus /usr/local/bin/nexus
+            nexus init
+            ```
+
+            ### Windows
+            Download `nexus-win-x64.exe`, rename to `nexus.exe` and add to your PATH.
+
+            No .NET installation required.
