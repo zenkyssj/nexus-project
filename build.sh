@@ -12,7 +12,6 @@ dotnet publish src/Nexus.Cli/Nexus.Cli.csproj \
   -r "$RID" \
   --self-contained true \
   -p:PublishSingleFile=true \
-  -p:PublishTrimmed=true \
   -o "$OUT"
 
 BINARY="$OUT/nexus"
