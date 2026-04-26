@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Y0nvZHLT7Lg=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Jose Ariel\\Desktop\\nexus-project\\src\\Nexus.Cli\\Nexus.Cli.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Jose Ariel\\.nuget\\packages\\spectre.console\\0.49.1\\spectre.console.0.49.1.nupkg.sha512",
+    "C:\\Users\\Jose Ariel\\.nuget\\packages\\system.commandline\\2.0.0-beta4.22272.1\\system.commandline.2.0.0-beta4.22272.1.nupkg.sha512"
+  ],
+  "logs": []
+}

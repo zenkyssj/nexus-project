@@ -1,0 +1,82 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Jose Ariel\\Desktop\\nexus-project\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E4DFCAE9-3273-4C60-AF5A-223C8CBB09D5}|src\\Nexus.Cli\\Nexus.Cli.csproj|c:\\users\\jose ariel\\desktop\\nexus-project\\src\\nexus.cli\\nexus.cli.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{E4DFCAE9-3273-4C60-AF5A-223C8CBB09D5}|src\\Nexus.Cli\\Nexus.Cli.csproj|solutionrelative:src\\nexus.cli\\nexus.cli.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E4DFCAE9-3273-4C60-AF5A-223C8CBB09D5}|src\\Nexus.Cli\\Nexus.Cli.csproj|c:\\users\\jose ariel\\desktop\\nexus-project\\src\\nexus.cli\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E4DFCAE9-3273-4C60-AF5A-223C8CBB09D5}|src\\Nexus.Cli\\Nexus.Cli.csproj|solutionrelative:src\\nexus.cli\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E4DFCAE9-3273-4C60-AF5A-223C8CBB09D5}|src\\Nexus.Cli\\Nexus.Cli.csproj|c:\\users\\jose ariel\\desktop\\nexus-project\\src\\nexus.cli\\commands\\initcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E4DFCAE9-3273-4C60-AF5A-223C8CBB09D5}|src\\Nexus.Cli\\Nexus.Cli.csproj|solutionrelative:src\\nexus.cli\\commands\\initcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Nexus.Cli.csproj",
+              "DocumentMoniker": "C:\\Users\\Jose Ariel\\Desktop\\nexus-project\\src\\Nexus.Cli\\Nexus.Cli.csproj",
+              "RelativeDocumentMoniker": "src\\Nexus.Cli\\Nexus.Cli.csproj",
+              "ToolTip": "C:\\Users\\Jose Ariel\\Desktop\\nexus-project\\src\\Nexus.Cli\\Nexus.Cli.csproj",
+              "RelativeToolTip": "src\\Nexus.Cli\\Nexus.Cli.csproj",
+              "ViewState": "AgIAAAQAAAAAAAAAAADgvw0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-19T20:48:13.652Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Jose Ariel\\Desktop\\nexus-project\\src\\Nexus.Cli\\Program.cs",
+              "RelativeDocumentMoniker": "src\\Nexus.Cli\\Program.cs",
+              "ToolTip": "C:\\Users\\Jose Ariel\\Desktop\\nexus-project\\src\\Nexus.Cli\\Program.cs",
+              "RelativeToolTip": "src\\Nexus.Cli\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T20:44:21.374Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "InitCommand.cs",
+              "DocumentMoniker": "C:\\Users\\Jose Ariel\\Desktop\\nexus-project\\src\\Nexus.Cli\\Commands\\InitCommand.cs",
+              "RelativeDocumentMoniker": "src\\Nexus.Cli\\Commands\\InitCommand.cs",
+              "ToolTip": "C:\\Users\\Jose Ariel\\Desktop\\nexus-project\\src\\Nexus.Cli\\Commands\\InitCommand.cs",
+              "RelativeToolTip": "src\\Nexus.Cli\\Commands\\InitCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T20:16:48.903Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
