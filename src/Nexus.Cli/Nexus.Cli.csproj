@@ -11,11 +11,8 @@
     <ToolCommandName>nexus</ToolCommandName>
     <PackageId>Nexus.Bot</PackageId>
     <Authors>Jose Aguilar</Authors>
-    <Version>1.0.0</Version>
+    <Version>0.1.0</Version>
     <Description>WhatsApp bot with AI assistant capabilities for your server</Description>
-    <PublishSingleFile>true</SelfContained>
-    <PublishTrimmed>true</PublishTrimmed>
-    <TrimmerRootDescriptors>trimmer-roots.xml</TrimmerRootDescriptors>
   </PropertyGroup>
 
   <ItemGroup>
