@@ -39,6 +39,8 @@ public static class BridgeInstaller
     const { Client, LocalAuth } = require('whatsapp-web.js');
     const qrcode = require('qrcode-terminal');
     const http = require('http');
+    const fs = require('fs');
+
 
     const NEXUS_API = 'http://localhost:5000';
     const BRIDGE_PORT = 5001;
@@ -56,6 +58,11 @@ public static class BridgeInstaller
 
     client.on('ready', () => {
         console.log('[Nexus Bridge] ✅ WhatsApp connected!');
+        const cfg = JSON.parse(fs.readFileSync(
+          process.env.HOME + '/.nexus/config.json', 'utf-8'
+        ));
+        const target = cfg.authorizedNumber + '@c.us';
+        client.sendMessage(target, '🚀 *Nexus conectado!*\nEnviá un mensaje para empezar.');
     });
 
     client.on('disconnected', (reason) => {
@@ -65,14 +72,22 @@ public static class BridgeInstaller
     // ─── Receive messages and forward to .NET ──────────────────────────────────
     client.on('message', async (msg) => {
         if (msg.isGroupMsg) return;
-
+        if (msg.from === 'status@broadcast') return;
+        if (msg.fromMe) return;
+            
+        const cfg = JSON.parse(fs.readFileSync(
+            process.env.HOME + '/.nexus/config.json', 'utf-8'
+        ));
+        const authorized = cfg.authorizedNumber + '@c.us';
+        if (msg.from !== authorized) return;
+    
         try {
             const body = JSON.stringify({
                 from: msg.from,
                 body: msg.body,
                 timestamp: msg.timestamp
             });
-
+        
             const req = http.request(`${NEXUS_API}/message`, {
                 method: 'POST',
                 headers: {
@@ -80,7 +95,7 @@ public static class BridgeInstaller
                     'Content-Length': Buffer.byteLength(body)
                 }
             });
-
+        
             req.on('error', (e) => console.error('[Nexus Bridge] Forward error:', e.message));
             req.write(body);
             req.end();
