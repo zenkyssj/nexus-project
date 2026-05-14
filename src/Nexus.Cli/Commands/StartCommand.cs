@@ -29,9 +29,15 @@ namespace Nexus.Cli.Commands
 
                 var config = ConfigManager.Load();
 
-                if (string.IsNullOrEmpty(config.AuthorizedNumber))
+                if (config.Channel == "whatsapp" && string.IsNullOrEmpty(config.AuthorizedNumber))
                 {
                     AnsiConsole.MarkupLine("[red]Phone number not set. Run [bold]nexus config phone-number <number>[/][/]");
+                    return;
+                }
+
+                if (config.Channel == "telegram" && string.IsNullOrEmpty(config.TelegramToken))
+                {
+                    AnsiConsole.MarkupLine("[red]Telegram token not set. Run [bold]nexus init[/] again.[/]");
                     return;
                 }
 
@@ -53,7 +59,7 @@ namespace Nexus.Cli.Commands
                     return;
                 }
 
-                AnsiConsole.MarkupLine("[grey]→ Starting WhatsApp bridge...[/]");
+                AnsiConsole.MarkupLine($"[grey]→ Starting {config.Channel} bridge...[/]");
 
                 var node = OperatingSystem.IsWindows() ? "node.exe" : "node";
                 var bridgeProcess = new Process
@@ -70,9 +76,13 @@ namespace Nexus.Cli.Commands
 
                 bridgeProcess.Start();
 
+                var openMsg = config.Channel == "whatsapp"
+                  ? "Open WhatsApp on your phone to scan de QR code if prompted."
+                  : "Open Telegram and send /start to your bot.";
+
                 AnsiConsole.MarkupLine($"[green]✅ Bridge started (PID {bridgeProcess.Id})[/]");
                 AnsiConsole.MarkupLine("[bold green]✅ Nexus is running![/]");
-                AnsiConsole.MarkupLine("\nOpen WhatsApp on your phone to scan the QR code if prompted.");
+                AnsiConsole.MarkupLine($"\n{openMsg}");
                 AnsiConsole.MarkupLine("[grey]Press Ctrl+C to stop.[/]");
 
                 if (!daemon)

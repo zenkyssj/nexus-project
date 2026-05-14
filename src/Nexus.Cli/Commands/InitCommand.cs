@@ -35,16 +35,44 @@ namespace Nexus.Cli.Commands
 
             AnsiConsole.MarkupLine("[bold cyan]Starting Nexus setup...[/]\n");
 
-            var phoneNumber = AnsiConsole.Ask<string>(
-                "[bold]?[/] Your WhatsApp number [grey](with country code, e.g. 595981234567):[/]"
-            ).Trim();
+            var channel = AnsiConsole.Prompt(
+                new SelectionPromtp<string>()
+                .Title("[bold]?[/] Select the communication channel: ")
+                .PageSize(2)
+                .AddChoices("whatsapp", "telegram")
+            );
 
-            while (!IsValidPhone(phoneNumber))
+
+            string? phoneNumber = null;
+            string? telegramToken = null;
+            
+            if (channel == "whatsapp")
             {
-                AnsiConsole.MarkupLine("[red]Invalid number. Include country code, digits only.[/]");
                 phoneNumber = AnsiConsole.Ask<string>(
-                    "[bold]?[/] Your WhatsApp number:"
+                    "[bold]?[/] Your WhatsApp number [grey](with country code, e.g. 595981234567):[/]"
                 ).Trim();
+
+                while (!IsValidPhone(phoneNumber))
+                {
+                  AnsiConsole.MarkupLine("[red]Invalid number. Include country code, digits only.[/]");
+                  phoneNumber = AnsiConsole.Ask<string>(
+                      "[bold]?[/] Your WhatsApp number:"
+                  ).Trim();
+                }
+            }
+            else
+            {
+                telegramToken = AnsiConsole.Prompt(
+                    new TextPrompt<string>("[bold]?[/] Telegram bot token [grey](from @BotFather):[/]")
+                      .Secret()
+                ).Trim();
+
+                while (string.IsNullOrEmpty(telegramToken))
+                {
+                  telegramToken = AnsiConsole.Prompt(
+                      new TextPrompt<string>("[bold]?[/] Telegram bot token:").Secret()
+                  ).Trim();
+                }
             }
 
             // ─── Claude API Key ───────────────────────────────────────────────────
@@ -90,7 +118,9 @@ namespace Nexus.Cli.Commands
             // ─── Build and save config ────────────────────────────────────────────
             var config = new NexusConfig
             {
-                AuthorizedNumber = phoneNumber,
+                Channel = channel,
+                AuthorizedNumber = phoneNumber ?? string.Empty,
+                TelegramToken = telegramToken ?? string.Empty,
                 ClaudeApiKey = claudeKey,
                 AllowedPaths = [allowedPath],
                 SessionTimeoutMinutes = timeout,
@@ -117,7 +147,7 @@ namespace Nexus.Cli.Commands
                     await Task.Delay(500);
 
                     ctx.Status("Installing Node.js bridge...");
-                    await InstallBridgeAsync();
+                    await InstallBridgeAsync(channel);
 
                     ctx.Status("Creating directories...");
                     Directory.CreateDirectory(ConfigManager.GetLogsPath());
@@ -130,16 +160,16 @@ namespace Nexus.Cli.Commands
             AnsiConsole.MarkupLine("[green]✅ Directories created[/]");
 
             AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine("Run [bold cyan]nexus start[/] to launch the bot and connect WhatsApp.");
+            AnsiConsole.MarkupLine($"Run [bold cyan]nexus start[/] to launch the bot and connect {channel}.");
         }
 
-        private static async Task InstallBridgeAsync()
+        private static async Task InstallBridgeAsync(string channel)
         {
             var bridgePath = ConfigManager.GetBridgePath();
             Directory.CreateDirectory(bridgePath);
 
             // Write bridge files
-            await BridgeInstaller.WriteFilesAsync(bridgePath);
+            await BridgeInstaller.WriteFilesAsync(bridgePath, channel);
 
             // npm install
             var npm = OperatingSystem.IsWindows() ? "npm.cmd" : "npm";

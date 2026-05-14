@@ -12,6 +12,8 @@ namespace Nexus.Core.Configuration
         public int SessionTimeoutMinutes { get; set; } = 30;
         public ToolsConfig Tools { get; set; } = new();
         public List<CustomCommand> CustomCommands { get; set; } = [];
+        public string Channel { get; set; } = "whatsapp";
+        public string TelegramToken { get; set; } = string.Empty;
     }
 
     public class ToolsConfig
