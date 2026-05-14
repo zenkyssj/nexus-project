@@ -36,7 +36,7 @@ namespace Nexus.Cli.Commands
             AnsiConsole.MarkupLine("[bold cyan]Starting Nexus setup...[/]\n");
 
             var channel = AnsiConsole.Prompt(
-                new SelectionPromtp<string>()
+                new SelectionPrompt<string>()
                 .Title("[bold]?[/] Select the communication channel: ")
                 .PageSize(2)
                 .AddChoices("whatsapp", "telegram")
