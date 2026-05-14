@@ -38,7 +38,6 @@ namespace Nexus.Cli.Commands
             var channel = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                 .Title("[bold]?[/] Select the communication channel: ")
-                .PageSize(2)
                 .AddChoices("whatsapp", "telegram")
             );
 
