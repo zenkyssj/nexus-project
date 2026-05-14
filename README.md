@@ -12,3 +12,8 @@ nexus init
 Download `nexus-win-x64.exe`, rename to `nexus.exe` and add to your PATH.
 
 No .NET installation required.
+
+## Uninstall
+```bash
+sudo rm /usr/local/bin/nexus
+```
