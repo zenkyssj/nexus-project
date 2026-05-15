@@ -45,11 +45,17 @@ jobs:
           mv ./dist/${{ matrix.rid }}/${{ matrix.artifact }} \
              ./dist/nexus-${{ matrix.rid }}${{ matrix.rid == 'win-x64' && '.exe' || '' }}
 
+      - name: Bundle Python agent
+        shell: bash
+        run: tar -czf ./dist/nexus-agent.tar.gz -C agent/src nexus_agent
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: nexus-${{ matrix.rid }}
-          path: ./dist/nexus-${{ matrix.rid }}*
+          path: |
+            ./dist/nexus-${{ matrix.rid }}*
+            ./dist/nexus-agent.tar.gz
 
   release:
     needs: build

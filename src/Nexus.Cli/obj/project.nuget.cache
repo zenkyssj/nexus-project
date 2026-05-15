@@ -1,11 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "tWQWRFuRmro=",
+  "dgSpecHash": "ELosgwzP2Rw=",
   "success": true,
-  "projectFilePath": "/home/zenky/projects/dotnet-projects/nexus-project/src/Nexus.Cli/Nexus.Cli.csproj",
+  "projectFilePath": "/home/zenky/Projects/dotnet-projects/nexus-project/src/Nexus.Cli/Nexus.Cli.csproj",
   "expectedPackageFiles": [
+    "/home/zenky/.nuget/packages/microsoft.net.illink.tasks/10.0.4/microsoft.net.illink.tasks.10.0.4.nupkg.sha512",
     "/home/zenky/.nuget/packages/spectre.console/0.49.1/spectre.console.0.49.1.nupkg.sha512",
-    "/home/zenky/.nuget/packages/system.commandline/2.0.0-beta4.22272.1/system.commandline.2.0.0-beta4.22272.1.nupkg.sha512"
+    "/home/zenky/.nuget/packages/system.commandline/2.0.0-beta4.22272.1/system.commandline.2.0.0-beta4.22272.1.nupkg.sha512",
+    "/home/zenky/.nuget/packages/microsoft.netcore.app.runtime.linux-x64/10.0.4/microsoft.netcore.app.runtime.linux-x64.10.0.4.nupkg.sha512",
+    "/home/zenky/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.4/microsoft.aspnetcore.app.ref.10.0.4.nupkg.sha512",
+    "/home/zenky/.nuget/packages/microsoft.aspnetcore.app.runtime.linux-x64/10.0.4/microsoft.aspnetcore.app.runtime.linux-x64.10.0.4.nupkg.sha512",
+    "/home/zenky/.nuget/packages/microsoft.netcore.app.host.linux-x64/10.0.4/microsoft.netcore.app.host.linux-x64.10.0.4.nupkg.sha512"
   ],
   "logs": []
 }

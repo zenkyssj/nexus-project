@@ -76,18 +76,37 @@ namespace Nexus.Cli.Commands
 
                 bridgeProcess.Start();
 
+                // Start the Python Agent 
+                var agentPath = ConfigManager.GetAgentPath();
+                var python = OperatingSystem.IsWindows() ? "python" : "python3";
+                var agentProcess = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = python,
+                        Arguments = "-m nexus_agent",
+                        WorkingDirectory = agentPath,
+                        UseShellExecute = false,
+                        CreateNoWindow = daemon,
+                    }
+                };
+
+                agentProcess.Start();
+
                 var openMsg = config.Channel == "whatsapp"
                   ? "Open WhatsApp on your phone to scan de QR code if prompted."
                   : "Open Telegram and send /start to your bot.";
 
                 AnsiConsole.MarkupLine($"[green]✅ Bridge started (PID {bridgeProcess.Id})[/]");
+                AnsiConsole.MarkupLine($"[green]✅ Agent started (PID {agentProcess.Id})[/]");
                 AnsiConsole.MarkupLine("[bold green]✅ Nexus is running![/]");
                 AnsiConsole.MarkupLine($"\n{openMsg}");
                 AnsiConsole.MarkupLine("[grey]Press Ctrl+C to stop.[/]");
 
                 if (!daemon)
                 {
-                    await bridgeProcess.WaitForExitAsync();
+                    var tasks = new[] { bridgeProcess.WaitForExitAsync(), agentProcess.WaitForExitAsync()};
+                    await Task.WhenAny(tasks);
                 }
             });
 

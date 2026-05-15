@@ -23,6 +23,8 @@ public class ConfigManager
 
     public static string GetConfigPath() => ConfigPath;
 
+    public static string GetAgentPath() => Path.Combine(ConfigDir, "agent");
+
     public static NexusConfig Load()
     {
         if (!ConfigExists())

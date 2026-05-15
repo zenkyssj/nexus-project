@@ -148,6 +148,9 @@ namespace Nexus.Cli.Commands
                     ctx.Status("Installing Node.js bridge...");
                     await InstallBridgeAsync(channel);
 
+                    ctx.Status("Installing Python agent...");
+                    await InstallAgentAsync();
+
                     ctx.Status("Creating directories...");
                     Directory.CreateDirectory(ConfigManager.GetLogsPath());
                     Directory.CreateDirectory(ConfigManager.GetSessionsPath());
@@ -202,6 +205,44 @@ namespace Nexus.Cli.Commands
                 AnsiConsole.MarkupLine("[yellow]⚠ Could not run npm install automatically. Run it manually in:[/]");
                 AnsiConsole.MarkupLine($"[grey]{bridgePath}[/]");
             }
+        }
+
+        private static async Task InstallAgentAsync()
+        {
+            var agentPath = ConfigManager.GetAgentPath();
+            Directory.CreateDirectory(agentPath);
+
+            var agentUrl = "https://github.com/zenkyssj/nexus-project/releases/latest/download/nexus-agent.tar.gz";
+            var tarGz = Path.Combine(agentPath, "nexus-agent.tar.gz");
+
+            using var client = new HttpClient();
+            var response = await client.GetAsync(agentUrl);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                AnsiConsole.MarkupLine("[yellow]⚠ Could not download agent. Make sure Python agent is installed manually.[/]");
+                return;
+            }
+
+            await using var fs = new FileStream(tarGz, FileMode.Create);
+            await response.Content.CopyToAsync(fs);
+            fs.Close();
+
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "tar",
+                    Arguments = $"-xzf \"{tarGz}\" -C \"{agentPath}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+            await process.WaitForExitAsync();
+
+            File.Delete(tarGz);
         }
 
         private static bool IsValidPhone(string phone) =>
