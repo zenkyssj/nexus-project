@@ -23,7 +23,9 @@ fi
 chmod +x "$BINARY" 2>/dev/null || true
 
 echo ""
-echo "✅ Binary ready: $BINARY"
+echo "✅ Build complete:"
+echo "   $BINARY"
+echo "   $OUT/nexus-agent.tar.gz"
 echo ""
 echo "To install globally:"
 echo "  sudo cp $BINARY /usr/local/bin/nexus"
