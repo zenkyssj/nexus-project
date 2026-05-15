@@ -23,6 +23,14 @@ fi
 chmod +x "$BINARY" 2>/dev/null || true
 
 echo ""
+echo "Bundling and installing Python agent..."
+tar -czf "$OUT/nexus-agent.tar.gz" -C agent/src nexus_agent
+
+mkdir -p ~/.nexus/agent/
+rm -rf ~/.nexus/agent/nexus_agent/
+tar -xzf "$OUT/nexus-agent.tar.gz" -C ~/.nexus/agent/
+
+echo ""
 echo "✅ Build complete:"
 echo "   $BINARY"
 echo "   $OUT/nexus-agent.tar.gz"
