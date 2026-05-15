@@ -7,6 +7,7 @@
 # Build outputs
 bin/
 obj/
+dist/
 
 # NuGet
 *.nupkg
@@ -23,3 +24,8 @@ packages/
 # OS
 .DS_Store
 Thumbs.db
+
+# Python
+__pychache__/
+*.pyc
+.venv/
