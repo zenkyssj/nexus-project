@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # build.sh — builds a local self-contained binary
 # Usage: ./build.sh [linux-x64|win-x64|osx-x64]
+set -e 
 
 RID=${1:-linux-x64}
 OUT="./dist/$RID"
