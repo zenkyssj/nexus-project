@@ -74,7 +74,12 @@ def main():
 
     server = HTTPServer(('127.0.0.1', AGENT_PORT), NexusHandler)
     print(f"[Nexus Agent] Listening on http://localhost:{AGENT_PORT}")
-    server.serve_forever()
+
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\n[Nexus Agent] Shutting down...")
+        server.server_close();
 
 if __name__ == '__main__':
     main()
