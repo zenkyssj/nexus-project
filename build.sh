@@ -16,7 +16,7 @@ dotnet publish src/Nexus.Cli/Nexus.Cli.csproj \
   -o "$OUT"
 
 BINARY="$OUT/nexus"
-if [ "$RID" = "win-x64" ]; then
+if [[ "$RID" = "win-x64" ]]; then
   BINARY="$OUT/nexus.exe"
 fi
 
