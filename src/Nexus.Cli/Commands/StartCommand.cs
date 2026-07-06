@@ -73,6 +73,41 @@ namespace Nexus.Cli.Commands
                 // Start the Python Agent 
                 var agentPath = ConfigManager.GetAgentPath();
                 var python = OperatingSystem.IsWindows() ? "python" : "python3";
+                var pip = OperatingSystem.IsWindows() ? "python" : "python3";
+
+                var requirementsPath = Path.Combine(agentPath, "..", "requirements.txt");
+
+                if (File.Exists(requirementsPath))
+                {
+                    AnsiConsole.MarkupLine("[grey]→ Installing agent dependencies...[/]");
+                    var pipArgs = OperatingSystem.IsWindows()
+                        ? $"-m pip install -r \"{requirementsPath}\" -q"
+                        : $"-m pip install -r \"{requirementsPath}\" -q --break-system-packages";
+
+                    var pipProcess = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = pip,
+                            Arguments = pipArgs,
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                        }
+                    };
+                    pipProcess.Start();
+                    await pipProcess.WaitForExitAsync();
+
+                    if (pipProcess.ExitCode != 0)
+                    {
+                        var err = await pipProcess.StandardError.ReadToEndAsync();
+                        AnsiConsole.MarkupLine($"[red]Failed to install dependencies: {err}[/]");
+                        return;
+                    }
+                    AnsiConsole.MarkupLine("[grey]✓ Dependencies ready[/]");
+                }
+
                 var agentProcess = new Process
                 {
                     StartInfo = new ProcessStartInfo
