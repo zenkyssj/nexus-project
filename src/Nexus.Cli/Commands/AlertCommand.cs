@@ -22,7 +22,7 @@ namespace Nexus.Cli.Commands
 
         public static async Task RunAsync()
         {
-            AnsiConsole.MarkupLine("[bold cyan] Alert save successfully");  
+            AnsiConsole.MarkupLine("[bold cyan] Alert save successfully[/]\n");  
             return;
             // Implement the logic for the alert command here
         }
