@@ -16,6 +16,8 @@ namespace Nexus.Cli.Commands
             {
                 await RunAsync();
             });
+
+            return cmd;
         }
 
         public static async Task RunAsync()
