@@ -18,5 +18,6 @@ var root = new RootCommand("Nexus - Server Assistant");
 
 root.AddCommand(InitCommand.Build());
 root.AddCommand(StartCommand.Build());
+root.AddCommand(AlertCommand.Build());
 
 return await root.InvokeAsync(args);

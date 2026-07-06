@@ -10,7 +10,7 @@ namespace Nexus.Cli.Commands
     {
         public static Command Build()
         {
-            var cmd = Command("alert", "Manage server alerts");
+            var cmd = new Command("alert", "Manage server alerts");
 
             cmd.SetHandler(async (InvocationContext ctx) =>
             {
