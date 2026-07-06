@@ -48,9 +48,6 @@ public class ConfigManager
 
         switch (key.ToLower())
         {
-            case "phone-number":
-                config.AuthorizedNumber = value;
-                break;
             case "claude-key":
                 config.ClaudeApiKey = value;
                 break;
