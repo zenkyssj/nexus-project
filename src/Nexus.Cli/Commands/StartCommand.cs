@@ -29,12 +29,6 @@ namespace Nexus.Cli.Commands
 
                 var config = ConfigManager.Load();
 
-                if (config.Channel == "whatsapp" && string.IsNullOrEmpty(config.AuthorizedNumber))
-                {
-                    AnsiConsole.MarkupLine("[red]Phone number not set. Run [bold]nexus config phone-number <number>[/][/]");
-                    return;
-                }
-
                 if (config.Channel == "telegram" && string.IsNullOrEmpty(config.TelegramToken))
                 {
                     AnsiConsole.MarkupLine("[red]Telegram token not set. Run [bold]nexus init[/] again.[/]");
