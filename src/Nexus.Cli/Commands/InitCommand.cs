@@ -38,28 +38,12 @@ namespace Nexus.Cli.Commands
             var channel = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                 .Title("[bold]?[/] Select the communication channel: ")
-                .AddChoices("whatsapp", "telegram")
+                .AddChoices("telegram")
             );
 
-
-            string? phoneNumber = null;
             string? telegramToken = null;
-            
-            if (channel == "whatsapp")
-            {
-                phoneNumber = AnsiConsole.Ask<string>(
-                    "[bold]?[/] Your WhatsApp number [grey](with country code, e.g. 595981234567):[/]"
-                ).Trim();
 
-                while (!IsValidPhone(phoneNumber))
-                {
-                  AnsiConsole.MarkupLine("[red]Invalid number. Include country code, digits only.[/]");
-                  phoneNumber = AnsiConsole.Ask<string>(
-                      "[bold]?[/] Your WhatsApp number:"
-                  ).Trim();
-                }
-            }
-            else
+            if (channel == "telegram")
             {
                 telegramToken = AnsiConsole.Prompt(
                     new TextPrompt<string>("[bold]?[/] Telegram bot token [grey](from @BotFather):[/]")
