@@ -75,7 +75,8 @@ namespace Nexus.Cli.Commands
                 var python = OperatingSystem.IsWindows() ? "python" : "python3";
                 var pip = OperatingSystem.IsWindows() ? "python" : "python3";
 
-                var requirementsPath = Path.Combine(agentPath, "..", "requirements.txt");
+                // requirements.txt is extracted alongside nexus_agent inside agentPath
+                var requirementsPath = Path.Combine(agentPath, "requirements.txt");
 
                 if (File.Exists(requirementsPath))
                 {
