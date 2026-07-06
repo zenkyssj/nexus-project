@@ -11,7 +11,7 @@ Console.WriteLine("""
   ██║ ╚████║███████╗██╔╝ ██╗╚██████╔╝███████║
   ╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝  v1.0.0 - by zenkyssj
  
-  WhatsApp bot + AI assistant for your server
+  Telegram bot + AI assistant for your server
 """);
 
 var root = new RootCommand("Nexus - Server Assistant");

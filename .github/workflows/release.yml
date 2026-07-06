@@ -2,12 +2,57 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
+  # ── 1. Leer versión y verificar si el release ya existe ──────────────────────
+  check:
+    name: Check version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.read.outputs.version }}
+      should_release: ${{ steps.check.outputs.should_release }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version from .version_config.yml
+        id: read
+        run: |
+          VERSION=$(grep 'project-version:' .version_config.yml | awk '{print $2}')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📦 Version from config: $VERSION"
+
+      - name: Check if release already exists
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.read.outputs.version }}"
+
+          # Busca el release en la API de GitHub
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/$VERSION")
+
+          echo "GitHub API status for release $VERSION: $STATUS"
+
+          if [ "$STATUS" = "200" ]; then
+            echo "⏭️  Release $VERSION already exists — skipping."
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          else
+            echo "✅ Release $VERSION not found — proceeding."
+            echo "should_release=true" >> $GITHUB_OUTPUT
+          fi
+
+  # ── 2. Build (solo si should_release=true) ───────────────────────────────────
   build:
     name: Build ${{ matrix.rid }}
+    needs: check
+    if: needs.check.outputs.should_release == 'true'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -57,8 +102,11 @@ jobs:
             ./dist/nexus-${{ matrix.rid }}*
             ./dist/nexus-agent.tar.gz
 
+  # ── 3. Release (solo si build terminó bien) ───────────────────────────────────
   release:
-    needs: build
+    name: Create release
+    needs: [check, build]
+    if: needs.check.outputs.should_release == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -72,13 +120,15 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ needs.check.outputs.version }}
+          name: ${{ needs.check.outputs.version }}
           files: ./artifacts/*
           body: |
             ## Installation
 
             ### Linux / macOS
             ```bash
-            curl -L https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/nexus-linux-x64 -o nexus
+            curl -L https://github.com/${{ github.repository }}/releases/download/${{ needs.check.outputs.version }}/nexus-linux-x64 -o nexus
             chmod +x nexus
             sudo mv nexus /usr/local/bin/nexus
             nexus init

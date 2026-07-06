@@ -9,7 +9,7 @@ AGENT_PORT = 5000
 BRIDGE_PORT = 5001
 
 class NexusHandler(BaseHTTPRequestHandler):
-    llm = None 
+    llm: NexusLLM = None 
 
     def do_POST(self):
         length = int(self.headers.get('Content-Length',0))
@@ -32,10 +32,15 @@ class NexusHandler(BaseHTTPRequestHandler):
             self._send_json(200, {"ok": True})
             return
         
-        response = self.llm.process(text)
+        # Comando especial para resetear la sesión
+        if text.lower() in ("/reset", "/new", "/clear", "reset"):
+            self.llm.sessions.clear(from_id)
+            response = "🔄 Sesión reiniciada. ¿En qué puedo ayudarte?"
+        else:
+            response = self.llm.process(text, from_id=from_id)
 
+        print(f"[Respuesta] {response[:100]}{'...' if len(response) > 100 else ''}")
         self._send_to_bridge(from_id, response)
-
         self._send_json(200, {"ok": True, "response": response})
 
     def _handle_send(self, data):
@@ -57,7 +62,7 @@ class NexusHandler(BaseHTTPRequestHandler):
             conn.close()
         
         except Exception as e:
-            print(f"[An error ocurred sending to bridge]")
+            print(f"[An error ocurred sending to bridge] : {e}")
 
     def _send_json(self, status, data):
         self.send_response(status)
@@ -74,6 +79,10 @@ def main():
 
     server = HTTPServer(('127.0.0.1', AGENT_PORT), NexusHandler)
     print(f"[Nexus Agent] Listening on http://localhost:{AGENT_PORT}")
+    print(f"[Nexus Agent] Canal: {config.channel}")
+    print(f"[Nexus Agent] Tools: read_file={config.tools.read_file}, "
+          f"list_dir={config.tools.list_directory}, "
+          f"execute={config.tools.execute_command}")
 
     try:
         server.serve_forever()

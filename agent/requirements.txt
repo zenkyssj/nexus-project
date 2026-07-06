@@ -1,6 +1,1 @@
-[project]
-name = "nexus-agent"
-version = "0.1.1"
-requires-python = ">=3.10"
-
-
+anthropic>=0.40.0
