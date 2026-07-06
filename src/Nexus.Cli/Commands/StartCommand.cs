@@ -43,6 +43,10 @@ namespace Nexus.Cli.Commands
 
                 AnsiConsole.MarkupLine("[bold cyan]Starting Nexus...[/]");
 
+                // ── Kill any leftover processes on ports 5000/5001 ─────────────────
+                await KillPortAsync(5000);
+                await KillPortAsync(5001);
+
                 // Start Node bridge
                 var bridgePath = ConfigManager.GetBridgePath();
                 var bridgeIndex = Path.Combine(bridgePath, "index.js");
@@ -70,42 +74,39 @@ namespace Nexus.Cli.Commands
 
                 bridgeProcess.Start();
 
-                // Start the Python Agent 
+// ── Install Python deps ───────────────────────────────────────────
                 var agentPath = ConfigManager.GetAgentPath();
                 var python = OperatingSystem.IsWindows() ? "python" : "python3";
-                var pip = OperatingSystem.IsWindows() ? "python" : "python3";
-
-                // requirements.txt is extracted alongside nexus_agent inside agentPath
                 var requirementsPath = Path.Combine(agentPath, "requirements.txt");
 
                 if (File.Exists(requirementsPath))
                 {
                     AnsiConsole.MarkupLine("[grey]→ Installing agent dependencies...[/]");
-                    var pipArgs = OperatingSystem.IsWindows()
-                        ? $"-m pip install -r \"{requirementsPath}\" -q"
-                        : $"-m pip install -r \"{requirementsPath}\" -q --break-system-packages";
 
-                    var pipProcess = new Process
-                    {
-                        StartInfo = new ProcessStartInfo
-                        {
-                            FileName = pip,
-                            Arguments = pipArgs,
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
-                        }
-                    };
-                    pipProcess.Start();
-                    await pipProcess.WaitForExitAsync();
+                    // Prefer pip3 directly; fall back to python3 -m pip
+                    // Some distros ship pip3 as a binary but not as a python module
+                    var pipInstalled = await TryPipInstallAsync("pip3",
+                        $"install -r \"{requirementsPath}\" -q --break-system-packages");
 
-                    if (pipProcess.ExitCode != 0)
+                    if (!pipInstalled)
                     {
-                        var err = await pipProcess.StandardError.ReadToEndAsync();
-                        AnsiConsole.MarkupLine($"[red]Failed to install dependencies: {err}[/]");
+                        pipInstalled = await TryPipInstallAsync(python,
+                            $"-m pip install -r \"{requirementsPath}\" -q --break-system-packages");
+                    }
+
+                    if (!pipInstalled && OperatingSystem.IsWindows())
+                    {
+                        pipInstalled = await TryPipInstallAsync("pip",
+                            $"install -r \"{requirementsPath}\" -q");
+                    }
+
+                    if (!pipInstalled)
+                    {
+                        AnsiConsole.MarkupLine("[red]Failed to install Python dependencies automatically.[/]");
+                        AnsiConsole.MarkupLine($"[grey]Run manually: pip3 install anthropic --break-system-packages[/]");
                         return;
                     }
+
                     AnsiConsole.MarkupLine("[grey]✓ Dependencies ready[/]");
                 }
 
@@ -141,6 +142,83 @@ namespace Nexus.Cli.Commands
             });
 
             return cmd;
+        }
+
+                // ── Helpers ───────────────────────────────────────────────────────────────
+
+        /// <summary>Tries to run a pip command, returns true if exit code is 0.</summary>
+        private static async Task<bool> TryPipInstallAsync(string exe, string args)
+        {
+            try
+            {
+                var p = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = exe,
+                        Arguments = args,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                    }
+                };
+                p.Start();
+                await p.WaitForExitAsync();
+                return p.ExitCode == 0;
+            }
+            catch
+            {
+                return false; // executable not found
+            }
+        }
+
+        /// <summary>
+        /// Kills any process currently listening on the given TCP port.
+        /// Prevents EADDRINUSE on nexus start after a dirty shutdown.
+        /// </summary>
+        private static async Task KillPortAsync(int port)
+        {
+            try
+            {
+                if (OperatingSystem.IsWindows())
+                {
+                    // netstat + taskkill
+                    var find = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = "cmd.exe",
+                            Arguments = $"/c for /f \"tokens=5\" %a in ('netstat -aon ^| findstr :{port}') do taskkill /F /PID %a",
+                            UseShellExecute = false, CreateNoWindow = true,
+                            RedirectStandardOutput = true, RedirectStandardError = true,
+                        }
+                    };
+                    find.Start();
+                    await find.WaitForExitAsync();
+                }
+                else
+                {
+                    // fuser -k is the most portable on Linux
+                    var fuser = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = "fuser",
+                            Arguments = $"-k {port}/tcp",
+                            UseShellExecute = false, CreateNoWindow = true,
+                            RedirectStandardOutput = true, RedirectStandardError = true,
+                        }
+                    };
+                    fuser.Start();
+                    await fuser.WaitForExitAsync();
+                }
+            }
+            catch
+            {
+                // fuser may not be installed — not fatal, the bridge will fail
+                // with a clearer EADDRINUSE message anyway
+            }
         }
     }
 }
