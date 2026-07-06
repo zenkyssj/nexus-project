@@ -6,7 +6,6 @@ namespace Nexus.Core.Configuration
 {
     public class NexusConfig
     {
-        public string AuthorizedNumber { get; set; } = string.Empty;
         public string ClaudeApiKey { get; set; } = string.Empty;
         public List<string> AllowedPaths { get; set; } = [];
         public int SessionTimeoutMinutes { get; set; } = 30;

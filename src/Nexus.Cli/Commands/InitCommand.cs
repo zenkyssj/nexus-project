@@ -102,7 +102,6 @@ namespace Nexus.Cli.Commands
             var config = new NexusConfig
             {
                 Channel = channel,
-                AuthorizedNumber = phoneNumber ?? string.Empty,
                 TelegramToken = telegramToken ?? string.Empty,
                 ClaudeApiKey = claudeKey,
                 AllowedPaths = [allowedPath],
