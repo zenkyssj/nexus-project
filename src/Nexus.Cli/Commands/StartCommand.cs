@@ -103,7 +103,10 @@ namespace Nexus.Cli.Commands
                     if (!pipInstalled)
                     {
                         AnsiConsole.MarkupLine("[red]Failed to install Python dependencies automatically.[/]");
-                        AnsiConsole.MarkupLine($"[grey]Run manually: pip3 install anthropic --break-system-packages[/]");
+                        AnsiConsole.MarkupLine("[red]pip3 not found. Install it first, then run nexus start again:[/]");
+                        AnsiConsole.MarkupLine("[grey]  Ubuntu/Debian:       sudo apt install python3-pip -y[/]");
+                        AnsiConsole.MarkupLine("[grey]  Amazon Linux/RHEL:   sudo yum install python3-pip -y[/]");
+                        AnsiConsole.MarkupLine("[grey]  macOS:               brew install python3[/]");
                         return;
                     }
 
